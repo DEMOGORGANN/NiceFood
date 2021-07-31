@@ -1,6 +1,10 @@
 "use strict";
 
-let numberOfFilms, a, b, d;
+let numberOfFilms,
+  a,
+  b,
+  d,
+  chet = 0;
 
 start();
 
@@ -9,11 +13,19 @@ const personalMovieDB = {
   movie: {},
   actors: {},
   genres: [],
-  privat: false,
+  privat: true,
+  toogleVisibleMyBD: function () {
+    if (this.privat == false) {
+      this.privat = true;
+    } else {
+      this.privat = false;
+    }
+  },
 };
 
-CycleForShowFilm();
 PersonalCategoriesCheckFilms();
+CycleForShowFilm();
+personalMovieDB.toogleVisibleMyBD();
 showMyBD();
 writeYourGenges();
 
@@ -43,7 +55,7 @@ function start() {
 function CycleForShowFilm() {
   for (let i = 0; i < 2; i++) {
     a = prompt("Один из просмотренных фильмов");
-    while (a == "" || a == null || a.length > 50) {
+    while (a == "" || a == null || a.length > 50 || !isNaN(a)) {
       a = prompt("Один из просмотренных фильмов");
     }
 
@@ -70,4 +82,7 @@ function writeYourGenges() {
     }
     personalMovieDB.genres[i - 1] = d;
   }
+  personalMovieDB.genres.forEach(function (elem, i) {
+        console.log(`Любимый жанр #${i+1} - это ${elem}`)
+  });  
 }
