@@ -15,7 +15,7 @@ const personalMovieDB = {
   genres: [],
   privat: true,
   toogleVisibleMyBD: function () {
-    if (this.privat == false) {
+    if (!this.privat) {
       this.privat = true;
     } else {
       this.privat = false;
@@ -23,11 +23,11 @@ const personalMovieDB = {
   },
 };
 
-PersonalCategoriesCheckFilms();
-CycleForShowFilm();
-personalMovieDB.toogleVisibleMyBD();
-showMyBD();
-writeYourGenges();
+// PersonalCategoriesCheckFilms();
+// CycleForShowFilm();
+// personalMovieDB.toogleVisibleMyBD();
+// showMyBD();
+// writeYourGenges();
 
 function PersonalCategoriesCheckFilms() {
   if (personalMovieDB.count < 10) {
@@ -83,6 +83,8 @@ function writeYourGenges() {
     personalMovieDB.genres[i - 1] = d;
   }
   personalMovieDB.genres.forEach(function (elem, i) {
-        console.log(`Любимый жанр #${i+1} - это ${elem}`)
-  });  
+    console.log(`Любимый жанр #${i + 1} - это ${elem}`);
+  });
 }
+
+
