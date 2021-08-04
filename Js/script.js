@@ -91,7 +91,7 @@
   // let ab = ["dsfds", "gfh", "dsfdfghs", "dsfdxgfhs", "dsfdfghs"];
   // console.log(...arr, ...ab);
 }
-
+{
 let bg = document.querySelector(".promo__bg");
 
 bg.style.backgroundImage = 'url("/img/bg.jpg")';
@@ -166,5 +166,14 @@ function deleteOst(film) {
     }
   });
 }
-
 createMovieList(movieDB.movies, movieList);
+
+const wrap = document.querySelector(".wrapperr"),
+  arrButton = wrap.getElementsByTagName("button");
+
+wrap.addEventListener("click", (event) => {
+  if (event.target && event.target.nodeName == "BUTTON")
+    arrButton[1].classList.toggle("red");
+  // console.dir(arrButton);
+});
+}
