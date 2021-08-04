@@ -99,24 +99,72 @@ bg.style.backgroundImage = 'url("/img/bg.jpg")';
 const movieDB = {
   movies: [
     "Логан",
-    "Лига справедливости",
+    "Лига справедливостиsdsdadasdasddsasdasdasdasd",
     "Ла-ла лэнд",
     "Одержимость",
     "Амогуус",
-    "Скотт Пилигрим против...",
+    "Скотт Пилигрим против",
     "Вертолебус",
     "Абобус",
   ],
 };
 
-movieDB.movies = movieDB.movies.sort();
+const movieList = document.querySelector(".promo__interactive-list"),
+  addForm = document.querySelector("form.add"),
+  addInput = addForm.querySelector(".adding__input"),
+  checkbox = addForm.querySelector('[type="checkbox"]');
 
-const movieList = document.querySelector(".promo__interactive-list");
+addForm.addEventListener("submit", (e) => {
+  e.preventDefault();
 
-movieDB.movies.forEach((item, i) => {
-  movieList.innerHTML += `
-      <li class="promo__interactive-item">${i + 1} - ${item}
-         <div class="delete"></div>
-      </li>
-  `;
+  let newFilms = addInput.value;
+  const FavoriteFilms = checkbox.checked;
+  if (FavoriteFilms) {
+    console.log("оп");
+  }
+  if (newFilms && isNaN(newFilms) && newFilms.length < 50) {
+    movieDB.movies.push(newFilms);
+    SortArr(movieDB.movies);
+    createMovieList(movieDB.movies, movieList);
+  }
+  e.target.reset();
 });
+
+function createMovieList(films, parent) {
+  parent.innerHTML = "";
+  SortArr(movieDB.movies);
+
+  films.forEach((film, i) => {
+    parent.innerHTML += `
+          <li class="promo__interactive-item">${i + 1} ${film}
+              <div class="delete"></div>
+          </li>
+      `;
+  });
+
+  document.querySelectorAll(".delete").forEach((item, i) => {
+    item.addEventListener("click", () => {
+      item.parentElement.remove();
+      movieDB.movies.splice(i, 1);
+      createMovieList(films, parent);
+    });
+  });
+
+  deleteOst(movieDB.movies);
+}
+
+function SortArr(arr) {
+  arr.sort();
+  deleteOst(movieDB.movies);
+}
+
+function deleteOst(film) {
+  film.forEach((item, i) => {
+    if (item.length > 21) {
+      item = `${item.slice(0, 19)}...`;
+      film[i] = item;
+    }
+  });
+}
+
+createMovieList(movieDB.movies, movieList);
