@@ -164,14 +164,14 @@
   //   // console.dir(arrButton);
   // });
 }
-
+//================================================================================TABS
 const navitem = document.querySelector(".tabheader__items"),
   item = document.querySelectorAll(".tabheader__item"),
   icons = document.querySelectorAll(".tabcontent");
 
 function deleteItem() {
   icons.forEach((item) => {
-    item.classList.remove('fade');
+    item.classList.remove("fade");
     item.style.display = "none";
   });
 
@@ -200,3 +200,53 @@ navitem.addEventListener("click", (e) => {
     });
   }
 });
+
+//===================================================================================================TIMER
+
+const deadLine = "2021-08-09";
+
+function GetLastDat(endTime) {
+  const k = Date.parse(endTime) - Date.parse(new Date()),
+    days = Math.floor(k / (1000 * 60 * 60 * 24)),
+    hours = Math.floor((k / (1000 * 60 * 60)) % 24),
+    minutes = Math.floor((k / (1000 * 60)) % 60),
+    seconds = Math.floor((k / 1000) % 60);
+  return {
+    k,
+    days,
+    hours,
+    minutes,
+    seconds,
+  };
+}
+
+function setTimeoutTimer(selector, endTimes) {
+  const WhoTimer = document.querySelector(selector),
+    days = WhoTimer.querySelector("#days"),
+    hours = WhoTimer.querySelector("#hours"),
+    minutes = WhoTimer.querySelector("#minutes"),
+    seconds = WhoTimer.querySelector("#seconds"),
+    setTimeoutAll = setInterval(UpdateTime, 1000);
+  UpdateTime();
+  function MathTimes(num) {
+    if (num > 0 && num < 10) {
+      return `0${num}`;
+    } else {
+      return num;
+    }
+  }
+
+  function UpdateTime() {
+    const newDate = GetLastDat(endTimes);
+    days.innerHTML = MathTimes(newDate.days);
+    hours.innerHTML = MathTimes(newDate.hours);
+    minutes.innerHTML = MathTimes(newDate.minutes);
+    seconds.innerHTML = MathTimes(newDate.seconds);
+    if (newDate.k <= 0) {
+      clearInterval(setTimeoutAll);
+    }
+  }
+}
+setTimeoutTimer(".timer", deadLine);
+
+//====================================================================================================
