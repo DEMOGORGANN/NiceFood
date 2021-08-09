@@ -203,7 +203,7 @@ navitem.addEventListener("click", (e) => {
 
 //===================================================================================================TIMER
 
-const deadLine = "2021-08-09";
+const deadLine = "2022-05-20";
 
 function GetLastDat(endTime) {
   const k = Date.parse(endTime) - Date.parse(new Date()),
@@ -211,6 +211,15 @@ function GetLastDat(endTime) {
     hours = Math.floor((k / (1000 * 60 * 60)) % 24),
     minutes = Math.floor((k / (1000 * 60)) % 60),
     seconds = Math.floor((k / 1000) % 60);
+  if (k <= 0) {
+    return {
+      k: 0,
+      days: 0,
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+    };
+  }
   return {
     k,
     days,
@@ -242,11 +251,66 @@ function setTimeoutTimer(selector, endTimes) {
     hours.innerHTML = MathTimes(newDate.hours);
     minutes.innerHTML = MathTimes(newDate.minutes);
     seconds.innerHTML = MathTimes(newDate.seconds);
-    if (newDate.k <= 0) {
-      clearInterval(setTimeoutAll);
-    }
   }
 }
 setTimeoutTimer(".timer", deadLine);
 
-//====================================================================================================
+//====================================================================================================ModalWindow
+
+const dark = document.querySelectorAll("[data-openModal]"),
+  modalWindowCloses = document.querySelector(".modal__close");
+
+dark.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    modalWindowOpen();
+  });
+});
+
+modalWindowCloses.addEventListener("click", () => {
+  modalWindowClose();
+});
+
+function modalWindowOpen() {
+  const modalWindow = document.querySelector(".modal");
+  modalWindow.classList.remove("modal");
+  modalWindow.classList.add("modal1");
+  modalWindow.classList.add("fade");
+  document.body.style.overflow = "hidden";
+  closeWindowModal();
+  closeForEsc();
+
+  function closeWindowModal() {
+    document.querySelector(".modal1").addEventListener("click", (e) => {
+      if (e.target === document.querySelector(".modal1")) {
+        modalWindowClose();
+      }
+    });
+  }
+  function closeForEsc() {
+    document.addEventListener("keydown", (e) => {
+      if (e.code === "Escape") {
+        modalWindowClose();
+      }
+    });
+  }
+}
+
+function modalWindowClose() {
+  const modalWindow = document.querySelector(".modal1");
+  modalWindow.classList.remove("modal1");
+  modalWindow.classList.add("modal");
+  modalWindow.classList.remove("fade");
+  document.body.style.overflow = "";
+}
+openModalForScroll();
+function openModalForScroll() {
+  const ChecInterval = setInterval(Shecing, 1);
+
+  function Shecing() {
+    if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+      modalWindowOpen();
+      clearInterval(ChecInterval);
+    }
+  }
+}
+//============================================================================================================
