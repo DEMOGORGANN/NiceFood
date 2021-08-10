@@ -257,65 +257,51 @@ setTimeoutTimer(".timer", deadLine);
 
 //====================================================================================================ModalWindow
 
-const dark = document.querySelectorAll("[data-openModal]"),
-  modalWindowCloses = document.querySelector(".modal__close");
+const modalTrigger = document.querySelectorAll("[data-modal]"),
+  modal = document.querySelector(".modal");
 
-dark.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    modalWindowOpen();
-  });
+modalTrigger.forEach((btn) => {
+  btn.addEventListener("click", openModal);
 });
 
-modalWindowCloses.addEventListener("click", () => {
-  modalWindowClose();
-});
-
-function modalWindowOpen() {
-  const modalWindow = document.querySelector(".modal");
-  modalWindow.classList.remove("modal");
-  modalWindow.classList.add("modal1");
-  modalWindow.classList.add("fade");
-  document.body.style.overflow = "hidden";
-  closeWindowModal();
-  closeForEsc();
-
-  function closeWindowModal() {
-    document.querySelector(".modal1").addEventListener("click", (e) => {
-      if (e.target === document.querySelector(".modal1")) {
-        modalWindowClose();
-      }
-    });
-  }
-  function closeForEsc() {
-    document.addEventListener("keydown", (e) => {
-      if (e.code === "Escape") {
-        modalWindowClose();
-      }
-    });
-  }
-}
-
-function modalWindowClose() {
-  const modalWindow = document.querySelector(".modal1");
-  modalWindow.classList.remove("modal1");
-  modalWindow.classList.add("modal");
-  modalWindow.classList.remove("fade");
+function closeModal() {
+  modal.classList.add("hide");
+  modal.classList.remove("show");
   document.body.style.overflow = "";
 }
-openModalForScroll();
-function openModalForScroll() {
-  const ChecInterval = setInterval(Shecing, 1);
 
-  function Shecing() {
-    if (
-      window.pageYOffset + document.documentElement.clientHeight >=
-      document.documentElement.scrollHeight
-    ) {
-      modalWindowOpen();
-      clearInterval(ChecInterval);
-    }
+function openModal() {
+  modal.classList.add("show");
+  modal.classList.remove("hide");
+  document.body.style.overflow = "hidden";
+  clearInterval(modalTimerId);
+}
+
+modal.addEventListener("click", (e) => {
+  if (e.target === modal || e.target.getAttribute("data-close") == "") {
+    closeModal();
+  }
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.code === "Escape" && modal.classList.contains("show")) {
+    closeModal();
+  }
+});
+
+const modalTimerId = setTimeout(openModal, 300000);
+// Изменил значение, чтобы не отвлекало
+
+function showModalByScroll() {
+  if (
+    window.pageYOffset + document.documentElement.clientHeight >=
+    document.documentElement.scrollHeight
+  ) {
+    openModal();
+    window.removeEventListener("scroll", showModalByScroll);
   }
 }
+window.addEventListener("scroll", showModalByScroll);
 //============================================================================================================ClassForCart
 
 class CreateCart {
@@ -386,5 +372,75 @@ for (let i = 0; i < 3; i++) {
         73
       ).NewCartForJs();
       break;
+  }
+}
+//===============================================================================================================Forms
+
+const forms = document.querySelectorAll("form");
+const message = {
+  loading: "img/form/spinner.svg",
+  success: "Спасибо! Скоро мы с вами свяжемся",
+  failure: "Что-то пошло не так...",
+};
+
+forms.forEach((item) => {
+  postData(item);
+});
+
+function postData(form) {
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const mes = document.createElement("img");
+    mes.src = message.loading;
+    form.insertAdjacentElement("afterend", mes);
+
+    const request = new XMLHttpRequest();
+    request.open("POST", "server.php");
+    request.setRequestHeader("Content-type", "application/json; charset=utf-8");
+    const formData = new FormData(form);
+
+    const obj = {};
+    formData.forEach((item, i) => {
+      obj[i] = item;
+    });
+
+    const json = JSON.stringify(obj);
+
+    request.send(json);
+
+    request.addEventListener("load", () => {
+      if (request.status === 200) {
+        showThanksModalWindow(message.success);
+        form.reset();
+        mes.remove();
+      } else {
+        showThanksModalWindow(message.failure);
+      }
+    });
+  });
+  function showThanksModalWindow(message) {
+    const modalWindowLikesClose = document.querySelector(".modal__dialog");
+
+    openModal();
+
+    modalWindowLikesClose.classList.add("hide");
+    const thanksModal = document.createElement("div");
+    thanksModal.classList.add("modal__dialog");
+    thanksModal.innerHTML = `
+            <div class="modal__content">
+                <div class="modal__close" data-close>×</div>
+                <div class="modal__title">${message}</div>
+            </div>
+        `;
+
+    document.querySelector(".modal").append(thanksModal);
+
+    setTimeout(() => {
+      thanksModal.remove();
+      modalWindowLikesClose.classList.remove("hide");
+      modalWindowLikesClose.classList.add("show");
+      closeModal();
+    }, 5000);
   }
 }
