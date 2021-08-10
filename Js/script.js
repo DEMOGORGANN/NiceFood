@@ -307,10 +307,84 @@ function openModalForScroll() {
   const ChecInterval = setInterval(Shecing, 1);
 
   function Shecing() {
-    if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+    if (
+      window.pageYOffset + document.documentElement.clientHeight >=
+      document.documentElement.scrollHeight
+    ) {
       modalWindowOpen();
       clearInterval(ChecInterval);
     }
   }
 }
-//============================================================================================================
+//============================================================================================================ClassForCart
+
+class CreateCart {
+  constructor(img, title, description, price, parent, transfer, ...classes) {
+    this.img = img;
+    this.title = title;
+    this.description = description;
+    this.price = price;
+    this.parent = document.querySelector(parent);
+    this.transfer = transfer;
+    this.FormaterToDollarForUA();
+    this.classes = classes;
+  }
+  NewCartForJs() {
+    const elem = document.createElement("div");
+    if (this.classes.length === 0) {
+      this.classes = "menu__item";
+      elem.classList.add(this.classes);
+    } else {
+      elem.classList.add(this.classes);
+    }
+    elem.innerHTML = `
+    <img src=${this.img} alt="vegy">
+    <h3 class="menu__item-subtitle">${this.title}</h3>
+    <div class="menu__item-descr">${this.description}</div>
+    <div class="menu__item-divider"></div>
+    <div class="menu__item-price">
+        <div class="menu__item-cost">Цена:</div>
+        <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
+
+</div>`;
+    this.parent.append(elem);
+  }
+  FormaterToDollarForUA() {
+    this.price = this.price * this.transfer;
+  }
+}
+
+for (let i = 0; i < 3; i++) {
+  switch (i) {
+    case 0:
+      new CreateCart(
+        "img/tabs/elite.jpg",
+        'Меню “Премиум"',
+        "В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!",
+        11,
+        ".menu .container",
+        73
+      ).NewCartForJs();
+      break;
+    case 1:
+      new CreateCart(
+        "img/tabs/vegy.jpg",
+        'Меню "Фитнес"',
+        'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
+        7,
+        ".menu .container",
+        73
+      ).NewCartForJs();
+      break;
+    case 2:
+      new CreateCart(
+        "img/tabs/post.jpg",
+        'Меню "Постное"',
+        "Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.",
+        9,
+        ".menu .container",
+        73
+      ).NewCartForJs();
+      break;
+  }
+}
