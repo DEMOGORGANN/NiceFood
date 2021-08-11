@@ -38,7 +38,7 @@ navitem.addEventListener("click", (e) => {
 
 //===================================================================================================TIMER
 
-const deadLine = "2022-05-20";
+const deadLine = "2021-10-20";
 
 function GetLastDat(endTime) {
   const k = Date.parse(endTime) - Date.parse(new Date()),
@@ -230,9 +230,6 @@ function postData(form) {
     mes.src = message.loading;
     form.insertAdjacentElement("afterend", mes);
 
-    const request = new XMLHttpRequest();
-    request.open("POST", "server.php");
-    request.setRequestHeader("Content-type", "application/json; charset=utf-8");
     const formData = new FormData(form);
 
     const obj = {};
@@ -242,17 +239,25 @@ function postData(form) {
 
     const json = JSON.stringify(obj);
 
-    request.send(json);
-
-    request.addEventListener("load", () => {
-      if (request.status === 200) {
+    fetch("server.php", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(obj),
+    })
+      .then((data) => data.text())
+      .then((data) => {
+        console.log(data);
         showThanksModalWindow(message.success);
-        form.reset();
         mes.remove();
-      } else {
+      })
+      .catch(() => {
         showThanksModalWindow(message.failure);
-      }
-    });
+      })
+      .finally(() => {
+        form.reset();
+      });
   });
   function showThanksModalWindow(message) {
     const modalWindowLikesClose = document.querySelector(".modal__dialog");
@@ -263,7 +268,7 @@ function postData(form) {
     const thanksModal = document.createElement("div");
     thanksModal.classList.add("modal__dialog");
     thanksModal.innerHTML = `
-            <div class="modal__content">
+            <div class="modal__content">s
                 <div class="modal__close" data-close>×</div>
                 <div class="modal__title">${message}</div>
             </div>
@@ -276,6 +281,6 @@ function postData(form) {
       modalWindowLikesClose.classList.remove("hide");
       modalWindowLikesClose.classList.add("show");
       closeModal();
-    }, 5000);
+    }, 4000);
   }
 }
