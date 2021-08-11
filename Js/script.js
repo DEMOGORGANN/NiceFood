@@ -4,6 +4,7 @@ const navitem = document.querySelector(".tabheader__items"),
   item = document.querySelectorAll(".tabheader__item"),
   icons = document.querySelectorAll(".tabcontent");
 
+  //удаление старого элемента
 function deleteItem() {
   icons.forEach((item) => {
     item.classList.remove("fade");
@@ -14,6 +15,7 @@ function deleteItem() {
     i.classList.remove("tabheader__item_active");
   });
 }
+//первый элемент при загрузке на страницу, в аргументах можно поменять стандарт,если не установлен в функции firstBlock(?)
 function firstBlock(i = 0) {
   icons[i].classList.add("fade");
   icons[i].style.display = "block";
@@ -22,8 +24,9 @@ function firstBlock(i = 0) {
 
 deleteItem();
 firstBlock();
-
+//добавление события на элемент, используеться дилегирование событий
 navitem.addEventListener("click", (e) => {
+  //присвоение target событие для более удобного использования
   const target = e.target;
   if (target && target.classList.contains("tabheader__item")) {
     item.forEach((item, i) => {
@@ -37,9 +40,9 @@ navitem.addEventListener("click", (e) => {
 });
 
 //===================================================================================================TIMER
-
+//можно установить время(временно)
 const deadLine = "2021-10-20";
-
+// вычисление времени до конца акции
 function GetLastDat(endTime) {
   const k = Date.parse(endTime) - Date.parse(new Date()),
     days = Math.floor(k / (1000 * 60 * 60 * 24)),
@@ -63,13 +66,14 @@ function GetLastDat(endTime) {
     seconds,
   };
 }
-
+//получение элементов
 function setTimeoutTimer(selector, endTimes) {
   const WhoTimer = document.querySelector(selector),
     days = WhoTimer.querySelector("#days"),
     hours = WhoTimer.querySelector("#hours"),
     minutes = WhoTimer.querySelector("#minutes"),
     seconds = WhoTimer.querySelector("#seconds"),
+    //таймер для изменения времени каждую секунду
     setTimeoutAll = setInterval(UpdateTime, 1000);
   UpdateTime();
   function MathTimes(num) {
@@ -79,7 +83,7 @@ function setTimeoutTimer(selector, endTimes) {
       return num;
     }
   }
-
+  //изменение времени
   function UpdateTime() {
     const newDate = GetLastDat(endTimes);
     days.innerHTML = MathTimes(newDate.days);
@@ -98,35 +102,37 @@ const modalTrigger = document.querySelectorAll("[data-modal]"),
 modalTrigger.forEach((btn) => {
   btn.addEventListener("click", openModal);
 });
-
+//закрытие модального окна на крестик, и на фон воокруг мод.окна
 function closeModal() {
   modal.classList.add("hide");
   modal.classList.remove("show");
   document.body.style.overflow = "";
 }
-
+//открытие модального окна на 2 развичные кнопки, который забинжены на data-modal в верске
 function openModal() {
   modal.classList.add("show");
   modal.classList.remove("hide");
   document.body.style.overflow = "hidden";
   clearInterval(modalTimerId);
 }
-
+//добавление события на на скрытие мод.окна
 modal.addEventListener("click", (e) => {
   if (e.target === modal || e.target.getAttribute("data-close") == "") {
     closeModal();
   }
 });
-
+//добавление события на на скрытие мод.окна
 document.addEventListener("keydown", (e) => {
   if (e.code === "Escape" && modal.classList.contains("show")) {
     closeModal();
   }
 });
-
+//таймер через сколько появится мод.окно независимо нажал пользователь или неты
 const modalTimerId = setTimeout(openModal, 300000);
 // Изменил значение, чтобы не отвлекало
 
+
+//показ подального окна при прокрутке на самый конец страницы
 function showModalByScroll() {
   if (
     window.pageYOffset + document.documentElement.clientHeight >=
@@ -136,6 +142,7 @@ function showModalByScroll() {
     window.removeEventListener("scroll", showModalByScroll);
   }
 }
+//добавление события
 window.addEventListener("scroll", showModalByScroll);
 //============================================================================================================ClassForCart
 
@@ -225,20 +232,17 @@ forms.forEach((item) => {
 function postData(form) {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-
+    //спиннер при загрузке
     const mes = document.createElement("img");
     mes.src = message.loading;
     form.insertAdjacentElement("afterend", mes);
 
+    //отправка на сервер
     const formData = new FormData(form);
-
     const obj = {};
     formData.forEach((item, i) => {
       obj[i] = item;
     });
-
-    const json = JSON.stringify(obj);
-
     fetch("server.php", {
       method: "POST",
       headers: {
@@ -259,6 +263,8 @@ function postData(form) {
         form.reset();
       });
   });
+
+ //Ф-ции показа модального окна
   function showThanksModalWindow(message) {
     const modalWindowLikesClose = document.querySelector(".modal__dialog");
 
