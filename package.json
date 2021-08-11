@@ -1,0 +1,22 @@
+{
+  "name": "nicefood",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "fakeDB": "json-server --watch db.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DEMOGORGANN/project.git"
+  },
+  "author": "Dmitriy DEMOGORGANN",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DEMOGORGANN/project/issues"
+  },
+  "homepage": "https://github.com/DEMOGORGANN/project#readme",
+  "devDependencies": {
+    "json-server": "^0.16.3"
+  }
+}

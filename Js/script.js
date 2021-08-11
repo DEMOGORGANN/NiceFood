@@ -1,10 +1,13 @@
 "use strict";
+//npx json-server --watch db.json
+//start json-server
+
 //================================================================================TABS
 const navitem = document.querySelector(".tabheader__items"),
   item = document.querySelectorAll(".tabheader__item"),
   icons = document.querySelectorAll(".tabcontent");
 
-  //удаление старого элемента
+//удаление старого элемента
 function deleteItem() {
   icons.forEach((item) => {
     item.classList.remove("fade");
@@ -15,8 +18,10 @@ function deleteItem() {
     i.classList.remove("tabheader__item_active");
   });
 }
-//первый элемент при загрузке на страницу, в аргументах можно поменять стандарт,если не установлен в функции firstBlock(?)
+
+//первый элемент при загрузке на страницу, в аргументах можно поменять стандарт,если не установлен в функции firstBlock(?). Также ф-ция для смены иконок
 function firstBlock(i = 0) {
+  //добавление к элемента классы
   icons[i].classList.add("fade");
   icons[i].style.display = "block";
   item[i].classList.add("tabheader__item_active");
@@ -24,6 +29,7 @@ function firstBlock(i = 0) {
 
 deleteItem();
 firstBlock();
+
 //добавление события на элемент, используеться дилегирование событий
 navitem.addEventListener("click", (e) => {
   //присвоение target событие для более удобного использования
@@ -31,7 +37,6 @@ navitem.addEventListener("click", (e) => {
   if (target && target.classList.contains("tabheader__item")) {
     item.forEach((item, i) => {
       if (target == item) {
-        console.log(i);
         deleteItem();
         firstBlock(i);
       }
@@ -40,8 +45,10 @@ navitem.addEventListener("click", (e) => {
 });
 
 //===================================================================================================TIMER
-//можно установить время(временно)
+
+//можно установить дату(временно)
 const deadLine = "2021-10-20";
+
 // вычисление времени до конца акции
 function GetLastDat(endTime) {
   const k = Date.parse(endTime) - Date.parse(new Date()),
@@ -66,6 +73,7 @@ function GetLastDat(endTime) {
     seconds,
   };
 }
+
 //получение элементов
 function setTimeoutTimer(selector, endTimes) {
   const WhoTimer = document.querySelector(selector),
@@ -92,22 +100,27 @@ function setTimeoutTimer(selector, endTimes) {
     seconds.innerHTML = MathTimes(newDate.seconds);
   }
 }
+
 setTimeoutTimer(".timer", deadLine);
 
 //====================================================================================================ModalWindow
 
+//обьявление
 const modalTrigger = document.querySelectorAll("[data-modal]"),
-  modal = document.querySelector(".modal");
+      modal = document.querySelector(".modal");
 
+//событие на открытие формы на кнопки
 modalTrigger.forEach((btn) => {
   btn.addEventListener("click", openModal);
 });
+
 //закрытие модального окна на крестик, и на фон воокруг мод.окна
 function closeModal() {
   modal.classList.add("hide");
   modal.classList.remove("show");
   document.body.style.overflow = "";
 }
+
 //открытие модального окна на 2 развичные кнопки, который забинжены на data-modal в верске
 function openModal() {
   modal.classList.add("show");
@@ -115,12 +128,14 @@ function openModal() {
   document.body.style.overflow = "hidden";
   clearInterval(modalTimerId);
 }
+
 //добавление события на на скрытие мод.окна
 modal.addEventListener("click", (e) => {
   if (e.target === modal || e.target.getAttribute("data-close") == "") {
     closeModal();
   }
 });
+
 //добавление события на на скрытие мод.окна
 document.addEventListener("keydown", (e) => {
   if (e.code === "Escape" && modal.classList.contains("show")) {
@@ -131,13 +146,13 @@ document.addEventListener("keydown", (e) => {
 const modalTimerId = setTimeout(openModal, 300000);
 // Изменил значение, чтобы не отвлекало
 
-
 //показ подального окна при прокрутке на самый конец страницы
 function showModalByScroll() {
   if (
     window.pageYOffset + document.documentElement.clientHeight >=
     document.documentElement.scrollHeight
   ) {
+    //если произошло открытие, тогда удалить событие
     openModal();
     window.removeEventListener("scroll", showModalByScroll);
   }
@@ -146,8 +161,19 @@ function showModalByScroll() {
 window.addEventListener("scroll", showModalByScroll);
 //============================================================================================================ClassForCart
 
+// Использование класса с контекстом вызова
 class CreateCart {
-  constructor(img, title, description, price, parent, transfer, ...classes) {
+  // parent указан как стандартный, можно поменять указав в db.json, так же и с transfer(Курс доллара к грн)
+  constructor(
+    img,
+    title,
+    description, 
+    price,
+    parent = ".menu .container",
+    transfer = 27,
+    ...classes 
+  ) {
+    //присвоение
     this.img = img;
     this.title = title;
     this.description = description;
@@ -157,7 +183,9 @@ class CreateCart {
     this.FormaterToDollarForUA();
     this.classes = classes;
   }
+  // Создание карточки
   NewCartForJs() {
+    //Создание div и присвоение классов которые обьявляются в ф-ции new CreateCart(..., ...classes)
     const elem = document.createElement("div");
     if (this.classes.length === 0) {
       this.classes = "menu__item";
@@ -165,6 +193,7 @@ class CreateCart {
     } else {
       elem.classList.add(this.classes);
     }
+    //добавление разметки к div
     elem.innerHTML = `
     <img src=${this.img} alt="vegy">
     <h3 class="menu__item-subtitle">${this.title}</h3>
@@ -175,96 +204,102 @@ class CreateCart {
         <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
 
 </div>`;
+    //добавление на страницу
     this.parent.append(elem);
   }
+  //Форматер с Доллара на ГрН
   FormaterToDollarForUA() {
     this.price = this.price * this.transfer;
   }
 }
 
-for (let i = 0; i < 3; i++) {
-  switch (i) {
-    case 0:
-      new CreateCart(
-        "img/tabs/elite.jpg",
-        'Меню “Премиум"',
-        "В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!",
-        11,
-        ".menu .container",
-        73
-      ).NewCartForJs();
-      break;
-    case 1:
-      new CreateCart(
-        "img/tabs/vegy.jpg",
-        'Меню "Фитнес"',
-        'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-        7,
-        ".menu .container",
-        73
-      ).NewCartForJs();
-      break;
-    case 2:
-      new CreateCart(
-        "img/tabs/post.jpg",
-        'Меню "Постное"',
-        "Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.",
-        9,
-        ".menu .container",
-        73
-      ).NewCartForJs();
-      break;
+//получение данных с бд db.json
+async function GetInfoForCart(url) {
+  let res = await fetch(url);
+
+  //Если ошибка
+  if (!res.ok) {
+    throw new Error(`Could not fetch ${url}, status: ${res.status}`);
   }
+
+  //Возвращаем Promis и обрабатываем в вызове ф-ции
+  return await res.json();
 }
+
+  //создание карточки, которая находится в db.json
+GetInfoForCart("http://localhost:3000/menu").then((data) => {
+
+  //Деструктизация обьекта
+  data.forEach(({ img, title, description, price }) => {
+
+    //создание с помощью класса CreateCart, и вызов метода NewCartForJs
+    new CreateCart(img, title, description, price).NewCartForJs();
+  });
+});
+
 //===============================================================================================================Forms
 
 const forms = document.querySelectorAll("form");
 const message = {
+  //сообщения загрузки либо выполнения отправли в бд, работает с BuildPostData
   loading: "img/form/spinner.svg",
   success: "Спасибо! Скоро мы с вами свяжемся",
   failure: "Что-то пошло не так...",
 };
 
+//перебор форм
 forms.forEach((item) => {
-  postData(item);
+  BuildPostData(item);
 });
 
-function postData(form) {
+//create fetch
+const postData = async (url, data) => {
+  let res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: data,
+  });
+  return await res.json();
+};
+
+//построение формы
+function BuildPostData(form) {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     //спиннер при загрузке
     const mes = document.createElement("img");
     mes.src = message.loading;
+    //выравнивание по середине
+    mes.style.cssText = `
+                display: block;
+                margin: 0 auto;
+            `;
     form.insertAdjacentElement("afterend", mes);
 
-    //отправка на сервер
+    //Получение данных
     const formData = new FormData(form);
-    const obj = {};
-    formData.forEach((item, i) => {
-      obj[i] = item;
-    });
-    fetch("server.php", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(obj),
-    })
-      .then((data) => data.text())
-      .then((data) => {
-        console.log(data);
+    const json = JSON.stringify(Object.fromEntries(formData.entries()));
+
+    //указание URL и форм которые необходимо отправить
+    postData("http://localhost:3000/requests", json)
+      .then(() => {
+        //отправка в бд при удачном завершении
         showThanksModalWindow(message.success);
         mes.remove();
       })
       .catch(() => {
+        //ошибка отправки на сервер
         showThanksModalWindow(message.failure);
       })
       .finally(() => {
+        //в любом случае очистить форму
         form.reset();
       });
   });
 
- //Ф-ции показа модального окна
+  //Ф-ции показа модального окна
   function showThanksModalWindow(message) {
     const modalWindowLikesClose = document.querySelector(".modal__dialog");
 
@@ -274,14 +309,14 @@ function postData(form) {
     const thanksModal = document.createElement("div");
     thanksModal.classList.add("modal__dialog");
     thanksModal.innerHTML = `
-            <div class="modal__content">s
+            <div class="modal__content">
                 <div class="modal__close" data-close>×</div>
                 <div class="modal__title">${message}</div>
             </div>
         `;
 
     document.querySelector(".modal").append(thanksModal);
-
+    //время через которое уберется мод.окно
     setTimeout(() => {
       thanksModal.remove();
       modalWindowLikesClose.classList.remove("hide");
@@ -290,3 +325,5 @@ function postData(form) {
     }, 4000);
   }
 }
+
+//
