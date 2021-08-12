@@ -326,35 +326,94 @@ function BuildPostData(form) {
 
 //========================================================================================SLAIDER
 
-const wrapperSlider = document.querySelectorAll(".offer__slide"),
-  btnPrev = document.querySelector(".offer__slider-prev"),
-  btnNext = document.querySelector(".offer__slider-next"),
-  current = document.querySelector("#current");
+addSlaider();
 
-let slideIndex = 1;
+//создание слайдера
+function addSlaider() {
+  //обьявления
+  const Slider = document.querySelectorAll(".offer__slide"),
+    btnPrev = document.querySelector(".offer__slider-prev"),
+    btnNext = document.querySelector(".offer__slider-next"),
+    current = document.querySelector("#current"),
+    slidesWrapper = document.querySelector(".offer__slider-wrapper"),
+    width = window.getComputedStyle(slidesWrapper).width,
+    slidesField = document.querySelector(".offer__slider-inner");
+  console.log(width);
+  //обьявление счетчиков
+  let slideIndex = 1,
+    offset = 0;
 
-ShowSlaid(slideIndex);
+  //Применение стилей и расчет всех слайдов
+  slidesField.style.width = 100 * Slider.length + "%";
+  slidesField.style.display = "flex";
+  slidesField.style.transition = "0.5s all";
+  slidesWrapper.style.overflow = "hidden";
 
-function ShowSlaid(n) {
-  if (n < 1) {
-    slideIndex = wrapperSlider.length;
-  }
-  if (n > wrapperSlider.length) {
-    slideIndex = 1;
-  }
-
-  wrapperSlider.forEach((item) => {
-    item.classList.add("hide");
+  //Присвоение каждому слайду ширины slidesWrapper, тоесть самого блока картинки
+  Slider.forEach((slide) => {
+    slide.style.width = width;
   });
-  wrapperSlider[slideIndex - 1].classList.remove("hide");
+
+  //событие на кнопку вперед
+  btnNext.addEventListener("click", () => {
+    //проверка на конец слайдера, если конец, перемещение в начало
+    if (offset == +width.slice(0, width.length - 2) * (Slider.length - 1)) {
+      offset = 0;
+      slideIndex = 1;
+
+      //иначе увеличение offset и счетчика элементов slideIndex
+    } else {
+      offset += +width.slice(0, width.length - 2);
+      slideIndex++;
+    }
+
+    //трансформирование элемента, а точнее перенос в на к-во пикселей offset и изменение счетчика current на сайте
+    slidesField.style.transform = `translateX(-${offset}px)`;
+    current.innerHTML = "0" + slideIndex;
+  });
+
+  //событие на кнопку назад
+  btnPrev.addEventListener("click", () => {
+    //проверка слайдера, если начало, то перенос в конец
+    if (offset == 0) {
+      offset = +width.slice(0, width.length - 2) * (Slider.length - 1);
+      slideIndex = Slider.length;
+
+      //иначе вычитание ширины обьекта и уменьшение slideIndex
+    } else {
+      offset -= +width.slice(0, width.length - 2);
+      slideIndex--;
+    }
+
+    //перенос на кол-во пикселей offSet и изменение счетчика current на сайте
+    slidesField.style.transform = `translateX(-${offset}px)`;
+    current.innerHTML = "0" + slideIndex;
+  });
 }
-function plusIndex(n) {
-  ShowSlaid((slideIndex += n));
-  current.innerHTML = "0" + slideIndex;
-}
-btnNext.addEventListener("click", () => {
-  plusIndex(1);
-});
-btnPrev.addEventListener("click", () => {
-  plusIndex(-1);
-});
+
+// {ShowSlaid(slideIndex);
+
+// function ShowSlaid(n) {
+//   if (n < 1) {
+//     slideIndex = wrapperSlider.length;
+//   }
+//   if (n > wrapperSlider.length) {
+//     slideIndex = 1;
+//   }
+
+//   wrapperSlider.forEach((item) => {
+//     item.classList.add("hide");
+//   });
+//   wrapperSlider[slideIndex - 1].classList.remove("hide");
+// }
+// function plusIndex(n) {
+//   ShowSlaid((slideIndex += n));
+//   current.innerHTML = "0" + slideIndex;
+// }
+// btnNext.addEventListener("click", () => {
+//   plusIndex(1);
+// });
+// btnPrev.addEventListener("click", () => {
+//   plusIndex(-1);
+// });
+// }Старый вариант слайдера
