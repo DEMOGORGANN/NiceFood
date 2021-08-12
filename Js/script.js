@@ -356,7 +356,6 @@ function addSlaider() {
 
   //событие на кнопку вперед
   btnNext.addEventListener("click", () => {
-    
     //проверка на конец слайдера, если конец, перемещение в начало
     //получение данных и их сверка
     if (offset == gettingValues()) {
@@ -375,14 +374,14 @@ function addSlaider() {
 
     // в конце ф-ции, для трансформации слайдера
     TransformSlaider();
+
+    gettingOperasityIndivator(slideIndex);
   });
 
   //событие на кнопку назад
   btnPrev.addEventListener("click", () => {
-
     //проверка слайдера, если начало, то перенос в конец
     if (offset == 0) {
-
       //получение данных в конце ф-ции
       offset = gettingValues();
       slideIndex = Slider.length;
@@ -395,8 +394,7 @@ function addSlaider() {
     // в конце ф-ции, для трансформации слайдера
     TransformSlaider();
 
-    dots.forEach((dot) => (dot.style.opacity = ".5"));
-    dots[slideIndex - 1].style.opacity = 1;
+    gettingOperasityIndivator(slideIndex);
   });
 
   //индикаторы
@@ -436,12 +434,11 @@ function addSlaider() {
 
       //получение данных и трансформация
       slideIndex = slideTo;
-      offset = +width.slice(0, width.length - 2) * (slideTo - 1);
+      offset = +width.replace(/\D/gi, "") * (slideTo - 1);
       TransformSlaider();
 
       //переключение прозрачглсти у индификаторов
-      dots.forEach((dot) => (dot.style.opacity = ".5"));
-      dots[slideTo - 1].style.opacity = 1;
+      gettingOperasityIndivator(slideTo);
     });
   });
   //трансформация слайдера на опр кол-во px
@@ -450,9 +447,14 @@ function addSlaider() {
     current.innerHTML = "0" + slideIndex;
   }
   //вычисление значений
-  function gettingValues(){
+  function gettingValues() {
     //использование регулярных выражений
-    return +width.replace(/\D/ig, "") * (Slider.length - 1);
+    return +width.replace(/\D/gi, "") * (Slider.length - 1);
+  }
+  //переключение прозрачглсти у индификаторов
+  function gettingOperasityIndivator(index) {
+    dots.forEach((dot) => (dot.style.opacity = ".5"));
+    dots[index - 1].style.opacity = 1;
   }
 }
 
