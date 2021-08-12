@@ -338,7 +338,7 @@ function addSlaider() {
     slidesWrapper = document.querySelector(".offer__slider-wrapper"),
     width = window.getComputedStyle(slidesWrapper).width,
     slidesField = document.querySelector(".offer__slider-inner");
-  console.log(width);
+
   //обьявление счетчиков
   let slideIndex = 1,
     offset = 0;
@@ -356,8 +356,10 @@ function addSlaider() {
 
   //событие на кнопку вперед
   btnNext.addEventListener("click", () => {
+    
     //проверка на конец слайдера, если конец, перемещение в начало
-    if (offset == +width.slice(0, width.length - 2) * (Slider.length - 1)) {
+    //получение данных и их сверка
+    if (offset == gettingValues()) {
       offset = 0;
       slideIndex = 1;
 
@@ -370,13 +372,19 @@ function addSlaider() {
     //трансформирование элемента, а точнее перенос в на к-во пикселей offset и изменение счетчика current на сайте
     slidesField.style.transform = `translateX(-${offset}px)`;
     current.innerHTML = "0" + slideIndex;
+
+    // в конце ф-ции, для трансформации слайдера
+    TransformSlaider();
   });
 
   //событие на кнопку назад
   btnPrev.addEventListener("click", () => {
+
     //проверка слайдера, если начало, то перенос в конец
     if (offset == 0) {
-      offset = +width.slice(0, width.length - 2) * (Slider.length - 1);
+
+      //получение данных в конце ф-ции
+      offset = gettingValues();
       slideIndex = Slider.length;
 
       //иначе вычитание ширины обьекта и уменьшение slideIndex
@@ -384,11 +392,68 @@ function addSlaider() {
       offset -= +width.slice(0, width.length - 2);
       slideIndex--;
     }
+    // в конце ф-ции, для трансформации слайдера
+    TransformSlaider();
 
-    //перенос на кол-во пикселей offSet и изменение счетчика current на сайте
+    dots.forEach((dot) => (dot.style.opacity = ".5"));
+    dots[slideIndex - 1].style.opacity = 1;
+  });
+
+  //индикаторы
+  const offerSlider = document.querySelector(".offer__slider"),
+    indicators = document.createElement("ol"),
+    dots = [];
+
+  //присвоение стилей
+  offerSlider.style.position = "relative";
+  indicators.classList.add("carousel-indicators");
+
+  //добавление div индификаторов на страницу
+  offerSlider.append(indicators);
+
+  for (let i = 0; i < Slider.length; i++) {
+    //создание индификатора
+    const dot = document.createElement("li");
+
+    //добавление атрибута каждому индификатору, у каждого собст значение от 1 до 0
+    dot.setAttribute("data-slide-to", i + 1);
+    dot.classList.add("dot");
+
+    //первому элементу прозрачность на 100%
+    if (i == 0) {
+      dot.style.opacity = 1;
+    }
+
+    //добавление индификаторов
+    indicators.append(dot);
+    dots.push(dot);
+  }
+
+  //событие на любой из индификаторов
+  dots.forEach((dot) => {
+    dot.addEventListener("click", (e) => {
+      const slideTo = e.target.getAttribute("data-slide-to");
+
+      //получение данных и трансформация
+      slideIndex = slideTo;
+      offset = +width.slice(0, width.length - 2) * (slideTo - 1);
+      TransformSlaider();
+
+      //переключение прозрачглсти у индификаторов
+      dots.forEach((dot) => (dot.style.opacity = ".5"));
+      dots[slideTo - 1].style.opacity = 1;
+    });
+  });
+  //трансформация слайдера на опр кол-во px
+  function TransformSlaider() {
     slidesField.style.transform = `translateX(-${offset}px)`;
     current.innerHTML = "0" + slideIndex;
-  });
+  }
+  //вычисление значений
+  function gettingValues(){
+    //использование регулярных выражений
+    return +width.replace(/\D/ig, "") * (Slider.length - 1);
+  }
 }
 
 // {ShowSlaid(slideIndex);
