@@ -107,7 +107,7 @@ setTimeoutTimer(".timer", deadLine);
 
 //обьявление
 const modalTrigger = document.querySelectorAll("[data-modal]"),
-      modal = document.querySelector(".modal");
+  modal = document.querySelector(".modal");
 
 //событие на открытие формы на кнопки
 modalTrigger.forEach((btn) => {
@@ -167,11 +167,11 @@ class CreateCart {
   constructor(
     img,
     title,
-    description, 
+    description,
     price,
     parent = ".menu .container",
     transfer = 27,
-    ...classes 
+    ...classes
   ) {
     //присвоение
     this.img = img;
@@ -226,12 +226,10 @@ async function GetInfoForCart(url) {
   return await res.json();
 }
 
-  //создание карточки, которая находится в db.json
+//создание карточки, которая находится в db.json
 GetInfoForCart("http://localhost:3000/menu").then((data) => {
-
   //Деструктизация обьекта
   data.forEach(({ img, title, description, price }) => {
-
     //создание с помощью класса CreateCart, и вызов метода NewCartForJs
     new CreateCart(img, title, description, price).NewCartForJs();
   });
@@ -326,4 +324,37 @@ function BuildPostData(form) {
   }
 }
 
-//
+//========================================================================================SLAIDER
+
+const wrapperSlider = document.querySelectorAll(".offer__slide"),
+  btnPrev = document.querySelector(".offer__slider-prev"),
+  btnNext = document.querySelector(".offer__slider-next"),
+  current = document.querySelector("#current");
+
+let slideIndex = 1;
+
+ShowSlaid(slideIndex);
+
+function ShowSlaid(n) {
+  if (n < 1) {
+    slideIndex = wrapperSlider.length;
+  }
+  if (n > wrapperSlider.length) {
+    slideIndex = 1;
+  }
+
+  wrapperSlider.forEach((item) => {
+    item.classList.add("hide");
+  });
+  wrapperSlider[slideIndex - 1].classList.remove("hide");
+}
+function plusIndex(n) {
+  ShowSlaid((slideIndex += n));
+  current.innerHTML = "0" + slideIndex;
+}
+btnNext.addEventListener("click", () => {
+  plusIndex(1);
+});
+btnPrev.addEventListener("click", () => {
+  plusIndex(-1);
+});
