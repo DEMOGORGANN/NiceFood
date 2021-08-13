@@ -499,6 +499,11 @@ function getMaleOrFamele() {
 function getInput() {
   document.querySelectorAll(".inpt").forEach((item) => {
     item.addEventListener("input", (e) => {
+      if(e.target.value.match(/\D/g)){
+        e.target.style.border = '1px solid red';
+      }else{
+        e.target.style.border = 'none';
+      }
       switch (e.target.getAttribute("id")) {
         case "height":
           helf = +e.target.value;
